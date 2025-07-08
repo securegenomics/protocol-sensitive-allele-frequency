@@ -3,26 +3,89 @@
 from typing import List, Dict, Any, TextIO
 import pysam
 
-# Target variants for Alzheimer's disease sensitive allele frequency analysis
+
 # These are the most clinically significant and population-variable SNPs for AD research
-TARGET_VARIANTS = [
-    # Primary APOE variants (most critical for AD risk)
-    "rs429358",    # APOE ε4 defining SNP - 3-12x increased AD risk
-    "rs7412",      # APOE ε2 defining SNP - protective variant
-    
-    # Secondary high-impact variants
-    "rs2075650",   # TOMM40 gene - 2-4x higher AD risk, linked to APOE
-    "rs199768005", # APOE rare variant - pathogenic significance
-    "rs6857",      # NECTIN2 gene - age-at-onset modifier
-    
-    # Alternative specification by genomic coordinates (GRCh38)
-    # Useful if rsIDs are not available in VCF
-    ("19", 44908684, "C"),   # rs429358 - APOE ε4 (C=risk allele)
-    ("19", 44908822, "T"),   # rs7412 - APOE ε2 (T=protective allele)  
-    ("19", 44892362, "G"),   # rs2075650 - TOMM40 (G=risk allele)
-    ("19", 44909057, "A"),   # rs199768005 - APOE rare variant
-    ("19", 44888997, "A"),   # rs6857 - NECTIN2 variant
+TARGET_VARIANTS_ALZHEIMERS = [
+    ("rs429358", 12.0),    # APOE ε4 homozygotes, OR up to ~12× for late-onset AD :contentReference[oaicite:1]{index=1}
+    ("rs7412", 0.62),      # APOE ε2 is protective (~38% reduced risk) :contentReference[oaicite:2]{index=2}
+    ("rs2075650", 2.0),    # TOMM40 – linked to APOE ε4, OR ~2–4×  
+    ("rs199768005", 4.0),  # Rare APOE variant, pathogenic significance  
+    ("rs6857", 1.3),       # NECTIN2 – age-at-onset modifier
+    ("rs11136000", 1.19),  # CLU, OR≈1.19  
+    ("rs3851179", 1.18),   # PICALM, OR≈1.18  
+    ("rs6733839", 1.22),   # BIN1, OR=1.22  
+    ("rs6656401", 1.18),   # CR1, OR≈1.18  
+    ("rs3764650", 1.23),   # ABCA7, OR≈1.23  
 ]
+
+
+TARGET_VARIANTS_SCHIZOPHRENIA = [
+    ("rs1344706", 1.12),  # ZNF804A – meta-analysis shows OR~1.12 for A allele :contentReference[oaicite:3]{index=3}
+    ("rs13194053", 1.10), # MHC/HLA region, immune-linked variant  
+    ("rs1006737", 1.15),  # CACNA1C – common calcium-channel SNP  
+    ("rs10994336", 1.10), # ANK3 – modest effect  
+    ("rs6994992", 1.10),  # NRG1 – developmental gene  
+    ("rs13242038", 1.10), # GRM3 – glutamate receptor  
+    ("rs4570625", 1.10),  # TPH2 – serotonin biosynthesis  
+    ("rs4680", 1.15),     # COMT Val158Met – dopamine metabolism  
+    ("rs6265", 1.15),     # BDNF Val66Met – neurotrophic factor  
+    ("rs1800497", 1.10),  # DRD2 – dopamine receptor  
+]
+
+TARGET_VARIANTS_BREAST_CANCER = [
+    ("rs2981579", 1.43),  # FGFR2 – proxy for rs1219648, OR≈1.43 :contentReference[oaicite:4]{index=4}
+    ("rs3803662", 1.28),  # TOX3 – OR≈1.28  
+    ("rs1045485", 1.10),  # CASP8 – apoptosis gene  
+    ("rs2981582", 1.19),  # FGFR2 intron 2, OR≈1.19 :contentReference[oaicite:5]{index=5}
+    ("rs1801516", 1.10),  # ATM – DNA repair  
+    ("rs17879961", 1.50), # CHEK2 I157T – moderate penetrance  
+    ("rs11515", 1.10),    # CDKN2A – tumor suppressor  
+    ("rs25487", 1.10),    # XRCC1 – DNA repair  
+    ("rs80357713", 5.0),  # BRCA1 truncating mutation  
+    ("rs11571833", 5.0),  # BRCA2 truncating mutation  
+    ("rs180177102", 3.0), # PALB2 – moderate-to-high risk  
+    ("rs555607708", 3.0), # CHEK2 1100delC – moderate penetration  
+]
+
+
+TARGET_VARIANTS_PROSTATE_CANCER = [
+    ("rs10993994", 1.20),  # MSMB T allele, meta‑analysis shows OR ≈ 1.20 in Caucasians:contentReference[oaicite:4]{index=4}
+    ("rs10896449", 1.10),  # Chr11q13 variant, OR ≈ 1.10
+    ("rs4245739", 1.12),   # MDM4 3′‑UTR, OR ≈ 1.12
+    ("rs16901979", 1.44),  # 8q24 region 2, OR ≈ 1.44 in East Asians
+    ("rs1447295", 1.20),   # 8q24 region 1, OR ≈ 1.20
+    ("rs10086908", 1.10),  # 8q24 region 5
+    ("rs1512268", 1.10),   # 8p21 region
+]
+
+TARGET_VARIANTS_TYPE2_DIABETES = [
+    ("rs7903146", 1.40),   # TCF7L2 T allele, OR ≈ 1.37–1.45:contentReference[oaicite:0]{index=0}:contentReference[oaicite:1]{index=1}
+    ("rs13266634", 1.15),  # SLC30A8 C allele, common ZnT8 variant:contentReference[oaicite:2]{index=2}
+    ("rs1801282", 1.14),  # PPARG Pro12Ala, OR ≈ 1.14 (protective A allele)
+    ("rs10923931", 1.12),  # IGF2BP2, OR ≈ 1.12–1.15 in multiple studies:contentReference[oaicite:3]{index=3}
+    ("rs4402960", 1.12),  # IGF2BP2 alternate, similar effect
+    ("rs5215", 1.10),     # KCNJ11 E23K, OR ≈ 1.10
+]
+
+TARGET_VARIANTS_CORONARY_ARTERY_DISEASE = [
+    ("rs1333049", 1.47),   # 9p21 C allele, OR ≈ 1.47 for heterozygotes; homozygotes ~1.9 risk:contentReference[oaicite:5]{index=5}
+    ("rs662799", 1.15),    # APOA5 variant affecting triglycerides, OR ≈ 1.15
+    ("rs6922269", 1.10),   # MTHFD1L, OR ≈ 1.10
+    ("rs2943634", 1.10),   # 2q36.3 intergenic, OR ≈ 1.10
+    ("rs501120", 1.10),    # CXCL12 upstream, OR ≈ 1.10
+    ("rs17228212", 1.10),  # SMAD3, OR ≈ 1.10
+    ("rs9818870", 1.10),   # MRAS, OR ≈ 1.10
+    ("rs9982601", 1.10),   # SLC5A3 region, OR ≈ 1.10
+    ("rs11556924", 1.10),  # ZC3HC1, OR ≈ 1.10
+    ("rs3869109", 1.10),   # HLA-C region, OR ≈ 1.10
+    ("rs11206510", 1.15),  # PCSK9, LDL-related, OR ≈ 1.15
+    ("rs599839", 1.15),    # SORT1, LDL-related, OR ≈ 1.15
+    ("rs17465637", 1.10),  # MIA3, OR ≈ 1.10
+    ("rs3184504", 1.10),   # SH2B3, OR ≈ 1.10
+]
+
+TARGET_VARIANTS = TARGET_VARIANTS_ALZHEIMERS + TARGET_VARIANTS_SCHIZOPHRENIA + TARGET_VARIANTS_BREAST_CANCER + TARGET_VARIANTS_PROSTATE_CANCER + TARGET_VARIANTS_TYPE2_DIABETES + TARGET_VARIANTS_CORONARY_ARTERY_DISEASE
+
 
 def make_record_map(vcf_path):
     """Create mapping from variant identifiers to genotype values."""
