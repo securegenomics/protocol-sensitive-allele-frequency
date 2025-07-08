@@ -6,6 +6,12 @@ import pysam
 # Reference for PRS models -> https://chatgpt.com/s/dr_686c84c4b4b48191b3c779a6393f15f0
 
 # These are the most clinically significant and population-variable SNPs for AD research
+TARGET_VARIANTS = {
+
+
+
+
+}
 TARGET_VARIANTS_ALZHEIMERS = [
     ("rs429358", 12.0),    # APOE ε4 homozygotes (late-onset AD OR ≈12:contentReference[oaicite:6]{index=6})
     ("rs7412", 0.62),      # APOE ε2 allele (protective; OR≈0.62, 38% reduced risk:contentReference[oaicite:7]{index=7})
