@@ -1,2 +1,3 @@
-# Alzheimer's Disease Sensitive Allele Frequency Protocol
+# Sensitive Allele Frequency Protocol
+
 
