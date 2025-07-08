@@ -1,6 +1,6 @@
 name: "breast-cancer-allele-frequency"
 version: "1.0.0"
-description: "Secure multi-party computation of allele frequencies for breast cancer susceptibility variants"
+description: "Secure multi-party computation of allele frequencies for sensitive alleles impacting number of diseases"
 author: "SecureGenomics Research Team"
 contact: "research@securegenomics.com"
 
