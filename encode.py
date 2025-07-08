@@ -3,6 +3,7 @@
 from typing import List, Dict, Any, TextIO
 import pysam
 
+# Reference for PRS models -> https://chatgpt.com/s/dr_686c84c4b4b48191b3c779a6393f15f0
 
 # These are the most clinically significant and population-variable SNPs for AD research
 TARGET_VARIANTS_ALZHEIMERS = [
